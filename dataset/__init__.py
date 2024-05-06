@@ -22,11 +22,22 @@ from .wbc import WBC
 
 def get_dataloader(args):
     transform_train = transforms.Compose([
+
+        transforms.RandomApply([
+            transforms.RandomAffine(degrees=30, translate=(0.2, 0.2), scale=(0.8, 1.2)),
+            transforms.ColorJitter(brightness=0.4)
+        ]),
+
         transforms.Resize((args.image_size,args.image_size)),
         transforms.ToTensor(),
     ])
 
     transform_train_seg = transforms.Compose([
+
+        transforms.RandomApply([
+            transforms.RandomAffine(degrees=30, translate=(0.2, 0.2), scale=(0.8, 1.2))
+        ]),
+
         transforms.Resize((args.out_size,args.out_size)),
         transforms.ToTensor(),
     ])

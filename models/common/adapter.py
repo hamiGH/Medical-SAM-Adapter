@@ -6,7 +6,7 @@ class Adapter(nn.Module):
     def __init__(self, D_features, mlp_ratio=0.25, act_layer=nn.GELU, skip_connect=True):
         super().__init__()
         self.skip_connect = skip_connect
-        D_hidden_features = 64 #int(D_features * mlp_ratio)
+        D_hidden_features = int(D_features * mlp_ratio)
         self.act = act_layer()
         self.D_fc1 = nn.Linear(D_features, D_hidden_features)
         self.D_fc2 = nn.Linear(D_hidden_features, D_features)
