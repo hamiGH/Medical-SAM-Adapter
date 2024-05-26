@@ -187,10 +187,10 @@ for epoch in range(settings.EPOCH):
     time_start = time.time()
     loss = function.train_sam(args, net, optimizer, nice_train_loader, epoch, writer, vis = args.vis)
 
-    def check_requires_grad(net):
-        for name, param in net.named_parameters():
-            print(f"{name}: requires_grad={param.requires_grad}")
-    check_requires_grad(net)
+    # def check_requires_grad(net):
+    #     for name, param in net.named_parameters():
+    #         print(f"{name}: requires_grad={param.requires_grad}")
+    # check_requires_grad(net)
 
     logger.info(f'Train loss: {loss} || @ epoch {epoch}.')
     time_end = time.time()
