@@ -83,7 +83,9 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
             masks = pack['label'].to(dtype = torch.float32, device = GPUdevice)
             # for k,v in pack['image_meta_dict'].items():
             #     print(k)
-            if 'pt' not in pack:
+            if 'mask_prompt' in pack:
+                mask_prompts = pack['mask_prompt'].to(dtype=torch.float32, device=GPUdevice)
+            elif 'pt' not in pack:
                 imgs, pt, masks = generate_click_prompt(imgs, masks)
             else:
                 pt = pack['pt']
@@ -149,9 +151,9 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
             with torch.no_grad():
                 if args.net == 'sam' or args.net == 'mobile_sam':
                     se, de = net.prompt_encoder(
-                        points=pt,
+                        points=None,
                         boxes=None,
-                        masks=None,
+                        masks=mask_prompts,
                     )
                 elif args.net == "efficient_sam":
                     coords_torch,labels_torch = transform_prompt(coords_torch,labels_torch,h,w)

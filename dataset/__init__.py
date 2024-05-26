@@ -18,6 +18,7 @@ from .segrap import SegRap
 from .stare import STARE
 from .toothfairy import ToothFairy
 from .wbc import WBC
+from .arcade import Arcade
 
 
 def get_dataloader(args):
@@ -51,8 +52,19 @@ def get_dataloader(args):
         transforms.Resize((args.out_size,args.out_size)),
         transforms.ToTensor(),
     ])
-    
-    if args.dataset == 'isic':
+
+    if args.dataset == 'arcade':
+        '''arcade data'''
+        arcade_train_dataset = Arcade(args, args.data_path, transform = transform_train,
+                                    transform_msk= transform_train_seg, mode='Training', prompt="mask")
+        arcade_test_dataset = Arcade(args, args.data_path, transform = transform_test,
+                                   transform_msk= transform_test_seg, mode = 'Test', prompt="mask")
+
+        nice_train_loader = DataLoader(arcade_train_dataset, batch_size=args.b, shuffle=True, num_workers=8, pin_memory=True)
+        nice_test_loader = DataLoader(arcade_test_dataset, batch_size=args.b, shuffle=False, num_workers=8, pin_memory=True)
+        '''end'''
+
+    elif args.dataset == 'isic':
         '''isic data'''
         isic_train_dataset = ISIC2016(args, args.data_path, transform = transform_train, transform_msk= transform_train_seg, mode = 'Training')
         isic_test_dataset = ISIC2016(args, args.data_path, transform = transform_test, transform_msk= transform_test_seg, mode = 'Test')
