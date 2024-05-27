@@ -10,7 +10,7 @@ from utils import random_box, random_click
 
 
 class Arcade(Dataset):
-    def __init__(self, args, data_path, transform=None, transform_msk=None, mode='Training', prompt='click', plane=False):
+    def __init__(self, args, data_path, transform=None, transform_msk=None, transform_prompt=None, mode='Training', prompt='click', plane=False):
 
         df = pd.read_csv(os.path.join(data_path, 'ARCADE_' + mode + '_GroundTruth.csv'), encoding='gbk')
         self.name_list = df.iloc[:,1].tolist()
@@ -25,6 +25,7 @@ class Arcade(Dataset):
 
         self.transform = transform
         self.transform_msk = transform_msk
+        self.transform_prompt = transform_prompt
 
     def __len__(self):
         return len(self.name_list)
@@ -75,7 +76,8 @@ class Arcade(Dataset):
                 state = torch.get_rng_state()
                 mask = self.transform_msk(mask).int()
                 torch.set_rng_state(state)
-                mask_prompt = self.transform_msk(mask_prompt).int()
+                if self.transform_prompt:
+                    mask_prompt = self.transform_prompt(mask_prompt).int()
             # if (inout == 0 and point_label == 1) or (inout == 1 and point_label == 0):
             #     mask = 1 - mask
         name = name.split('/')[-1].split(".jpg")[0]

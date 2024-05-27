@@ -43,6 +43,16 @@ def get_dataloader(args):
         transforms.ToTensor(),
     ])
 
+    transform_train_prompt = transforms.Compose([
+
+        transforms.RandomApply([
+            transforms.RandomAffine(degrees=30, translate=(0.2, 0.2), scale=(0.8, 1.2))
+        ]),
+
+        transforms.Resize((256, 256)),
+        transforms.ToTensor(),
+    ])
+
     transform_test = transforms.Compose([
         transforms.Resize((args.image_size, args.image_size)),
         transforms.ToTensor(),
@@ -53,12 +63,19 @@ def get_dataloader(args):
         transforms.ToTensor(),
     ])
 
+    transform_test_prompt = transforms.Compose([
+        transforms.Resize((256, 256)),
+        transforms.ToTensor(),
+    ])
+
     if args.dataset == 'arcade':
         '''arcade data'''
         arcade_train_dataset = Arcade(args, args.data_path, transform = transform_train,
-                                    transform_msk= transform_train_seg, mode='Training', prompt="mask")
+                                      transform_msk= transform_train_seg, transform_prompt=transform_train_prompt,
+                                      mode='Training', prompt="mask")
         arcade_test_dataset = Arcade(args, args.data_path, transform = transform_test,
-                                   transform_msk= transform_test_seg, mode = 'Test', prompt="mask")
+                                     transform_msk= transform_test_seg, transform_prompt=transform_test_prompt,
+                                     mode='Test', prompt="mask")
 
         nice_train_loader = DataLoader(arcade_train_dataset, batch_size=args.b, shuffle=True, num_workers=8, pin_memory=True)
         nice_test_loader = DataLoader(arcade_test_dataset, batch_size=args.b, shuffle=False, num_workers=8, pin_memory=True)
