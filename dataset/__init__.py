@@ -49,7 +49,7 @@ def get_dataloader(args):
             transforms.RandomAffine(degrees=30, translate=(0.2, 0.2), scale=(0.8, 1.2))
         ]),
 
-        transforms.Resize((256, 256)),
+        transforms.Resize((128, 128)),
         transforms.ToTensor(),
     ])
 
@@ -64,7 +64,7 @@ def get_dataloader(args):
     ])
 
     transform_test_prompt = transforms.Compose([
-        transforms.Resize((256, 256)),
+        transforms.Resize((128, 128)),
         transforms.ToTensor(),
     ])
 
