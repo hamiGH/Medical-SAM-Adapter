@@ -285,21 +285,22 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     imgs = torchvision.transforms.Resize((args.image_size,args.image_size))(imgs)
                     masks = torchvision.transforms.Resize((args.out_size,args.out_size))(masks)
                 
-                showp = pt
+                # showp = pt
+                showp = None
 
                 mask_type = torch.float32
                 ind += 1
                 b_size,c,w,h = imgs.size()
                 longsize = w if w >=h else h
 
-                if point_labels.clone().flatten()[0] != -1:
-                    # point_coords = samtrans.ResizeLongestSide(longsize).apply_coords(pt, (h, w))
-                    point_coords = pt
-                    coords_torch = torch.as_tensor(point_coords, dtype=torch.float, device=GPUdevice)
-                    labels_torch = torch.as_tensor(point_labels, dtype=torch.int, device=GPUdevice)
-                    if(len(point_labels.shape)==1): # only one point prompt
-                        coords_torch, labels_torch, showp = coords_torch[None, :, :], labels_torch[None, :], showp[None, :, :]
-                    pt = (coords_torch, labels_torch)
+                # if point_labels.clone().flatten()[0] != -1:
+                #     # point_coords = samtrans.ResizeLongestSide(longsize).apply_coords(pt, (h, w))
+                #     point_coords = pt
+                #     coords_torch = torch.as_tensor(point_coords, dtype=torch.float, device=GPUdevice)
+                #     labels_torch = torch.as_tensor(point_labels, dtype=torch.int, device=GPUdevice)
+                #     if(len(point_labels.shape)==1): # only one point prompt
+                #         coords_torch, labels_torch, showp = coords_torch[None, :, :], labels_torch[None, :], showp[None, :, :]
+                #     pt = (coords_torch, labels_torch)
 
                 '''init'''
                 if hard:
@@ -360,9 +361,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     '''vis images'''
                     if ind % args.vis == 0:
                         namecat = 'Test'
-                        for na in name[:2
-                        
-                        ]:
+                        for na in name[:2]:
                             img_name = na.split('/')[-1].split('.')[0]
                             namecat = namecat + img_name + '+'
                         vis_image(imgs,pred, masks, os.path.join(args.path_helper['sample_path'], namecat+'epoch+' +str(epoch) + '.jpg'), reverse=False, points=showp)
