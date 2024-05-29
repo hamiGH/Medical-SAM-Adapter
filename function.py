@@ -249,7 +249,10 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
             masksw = pack['label'].to(dtype = torch.float32, device = GPUdevice)
             # for k,v in pack['image_meta_dict'].items():
             #     print(k)
-            if 'pt' not in pack or args.thd:
+
+            if 'mask_prompt' in pack:
+                mask_prompts = pack['mask_prompt'].to(dtype=torch.float32, device=GPUdevice)
+            elif 'pt' not in pack or args.thd:
                 imgsw, ptw, masksw = generate_click_prompt(imgsw, masksw)
             else:
                 ptw = pack['pt']
@@ -309,9 +312,9 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     imge= net.image_encoder(imgs)
                     if args.net == 'sam' or args.net == 'mobile_sam':
                         se, de = net.prompt_encoder(
-                            points=pt,
+                            points=None,
                             boxes=None,
-                            masks=None,
+                            masks=mask_prompts,
                         )
                     elif args.net == "efficient_sam":
                         coords_torch,labels_torch = transform_prompt(coords_torch,labels_torch,h,w)
