@@ -266,24 +266,24 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 evl_ch = int(imgsw.size(-1))
 
             while (buoy + evl_ch) <= imgsw.size(-1):
-                if args.thd:
-                    pt = ptw[:,:,buoy: buoy + evl_ch]
-                else:
-                    pt = ptw
+                # if args.thd:
+                #     pt = ptw[:,:,buoy: buoy + evl_ch]
+                # else:
+                #     pt = ptw
 
                 imgs = imgsw[...,buoy:buoy + evl_ch]
                 masks = masksw[...,buoy:buoy + evl_ch]
                 buoy += evl_ch
 
-                if args.thd:
-                    pt = rearrange(pt, 'b n d -> (b d) n')
-                    imgs = rearrange(imgs, 'b c h w d -> (b d) c h w ')
-                    masks = rearrange(masks, 'b c h w d -> (b d) c h w ')
-                    imgs = imgs.repeat(1,3,1,1)
-                    point_labels = torch.ones(imgs.size(0))
-
-                    imgs = torchvision.transforms.Resize((args.image_size,args.image_size))(imgs)
-                    masks = torchvision.transforms.Resize((args.out_size,args.out_size))(masks)
+                # if args.thd:
+                #     pt = rearrange(pt, 'b n d -> (b d) n')
+                #     imgs = rearrange(imgs, 'b c h w d -> (b d) c h w ')
+                #     masks = rearrange(masks, 'b c h w d -> (b d) c h w ')
+                #     imgs = imgs.repeat(1,3,1,1)
+                #     point_labels = torch.ones(imgs.size(0))
+                #
+                #     imgs = torchvision.transforms.Resize((args.image_size,args.image_size))(imgs)
+                #     masks = torchvision.transforms.Resize((args.out_size,args.out_size))(masks)
                 
                 # showp = pt
                 showp = None
